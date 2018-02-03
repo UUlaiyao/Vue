@@ -1,30 +1,89 @@
 <template>
   <div class="app-container">
     <mt-header fixed title="我的Vue">
-        <span slot="left">
+        <span slot="left" @click="goBack" v-if="flag">
           <mt-button icon="back">返回</mt-button>
         </span>
     </mt-header>
 
+	<transition>
+	   <router-view></router-view>
+	</transition>
+ 
 
-    <router-view></router-view>
-
+  <nav class="mui-bar mui-bar-tab">
+			<router-link to="/home" class="mui-tab-item" href="#tabbar">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</router-link>
+			<router-link to="/menber" class="mui-tab-item" href="#tabbar-with-chat">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">会员</span>
+			</router-link>
+			<router-link to="/cart" class="mui-tab-item" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"><span class="mui-badge">0</span></span>
+				<span class="mui-tab-label">购物车</span>
+			</router-link>
+			<router-link to="/search" class="mui-tab-item" href="#tabbar-with-map">
+				<span class="mui-icon mui-icon-search"></span>
+				<span class="mui-tab-label">搜索</span>
+			</router-link>
+		</nav>
 
 
   </div>
 </template>
 
 <script>
-
-import { Header } from 'mint-ui'
-
+import { Header } from "mint-ui";
+import { Indicator } from 'mint-ui';
 export default {
   data() {
-    return {};
+    return {
+			flag:false
+		};
   },
-  created() {},
-  methods: {},
-  watch: {}
+  created() {
+    this.interceptors();
+  },
+  methods: {
+    interceptors() {
+      // Add a request interceptor
+      this.$http.interceptors.request.use(config => {
+        // Do something before request is sent
+        Indicator.open({
+          text: "Loading...",
+          spinnerType: "fading-circle"
+        });
+
+        return config;
+      });
+
+      // Add a response interceptor
+      this.$http.interceptors.response.use(response => {
+        // Do something with response data
+        Indicator.close();
+        return response;
+      });
+		},
+		goBack() {
+      this.$router.go(-1);
+    }
+  },
+  watch: {
+		'$route.path':{
+			  handler: function(newVal) {
+        /* if (newVal === "/home") {
+        this.flag = false;
+      } else {
+        this.flag = true;
+      } */
+        console.log("被强制执行了一次watch");
+        this.flag = !(newVal === "/home");
+      },
+      immediate: true // 衡水老白干
+		}
+	}
 };
 </script>
 
@@ -32,6 +91,21 @@ export default {
 <style lang="scss" scoped>
 .app-container {
   padding-top: 40px;
+  overflow: hidden;
+}
+.v-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+  position: absolute;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease;
 }
 </style>
 
