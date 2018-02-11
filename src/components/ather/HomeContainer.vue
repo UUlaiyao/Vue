@@ -1,10 +1,6 @@
 <template>
   <div>
-    <mt-swipe :auto="4000">
-        <mt-swipe-item v-for="item in lunbolist" :key="item.img">
-            <img :src="item.img" alt="">
-        </mt-swipe-item>
-    </mt-swipe>
+    <swipe :list="lunbolist" :imgsrc="'img'" :isfull="true"></swipe>
 
      <ul class="mui-table-view mui-grid-view mui-grid-9">
 		            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><router-link to="/home/newinfo">
@@ -35,6 +31,7 @@
 
 
 <script>
+import swipe from "../subComponents/Swper.vue";
 export default {
   data() {
     return {
@@ -54,33 +51,15 @@ export default {
         this.lunbolist = data.message;
       }
     }
+  },
+  components: {
+    swipe
   }
 };
 </script>
 
 
 <style lang="scss" scoped>
-.mint-swipe {
-  height: 180px;
-}
-.mint-swipe-item {
-  &:nth-child(1) {
-    background-color: pink;
-  }
-  &:nth-child(2) {
-    background-color: skyblue;
-  }
-  &:nth-child(3) {
-    background-color: yellowgreen;
-  }
-}
-.mint-swipe-items-wrap {
-  img {
-    width: 100%;
-    height: 100%;
-    vertical-align: middle;
-  }
-}
 .mui-table-view {
   img {
     width: 60px;

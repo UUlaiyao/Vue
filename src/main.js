@@ -4,6 +4,15 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 
+import moment from 'moment' 
+Vue.filter('dateFormat', function (val) {
+  // 借助于 moment.js 包来快速格式化时间
+  return moment(val).format('YYYY-MM-DD HH:mm:ss')
+})
+
+import VuePreview from 'vue2-preview'
+Vue.use(VuePreview)
+
 import axios from "axios"
 Vue.prototype.$http=axios
 axios.defaults.baseURL='http://39.106.32.91:3000'
@@ -25,6 +34,6 @@ import router from './router.js'
 const vm = new Vue({
   el: '#app',
   render: c => c(APP),
+  router,
   
-  router
 })
