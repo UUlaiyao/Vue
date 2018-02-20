@@ -21,7 +21,7 @@
 				<span class="mui-tab-label">会员</span>
 			</router-link>
 			<router-link to="/cart" class="mui-tab-item-my" href="#tabbar-with-contact">
-				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"><span class="mui-badge">0</span></span>
+				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"><span class="mui-badge"  id="badge">{{totalcount}}</span></span>
 				<span class="mui-tab-label">购物车</span>
 			</router-link>
 			<router-link to="/search" class="mui-tab-item-my" href="#tabbar-with-map">
@@ -36,12 +36,13 @@
 
 <script>
 import { Header } from "mint-ui";
-import { Indicator } from 'mint-ui';
+import { Indicator } from "mint-ui";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-			flag:false
-		};
+      flag: false
+    };
   },
   created() {
     this.interceptors();
@@ -65,25 +66,28 @@ export default {
         Indicator.close();
         return response;
       });
-		},
-		goBack() {
+    },
+    goBack() {
       this.$router.go(-1);
     }
   },
   watch: {
-		'$route.path':{
-			  handler: function(newVal) {
+    "$route.path": {
+      handler: function(newVal) {
         /* if (newVal === "/home") {
         this.flag = false;
       } else {
         this.flag = true;
       } */
-        console.log("被强制执行了一次watch");
+        // console.log("被强制执行了一次watch");
         this.flag = !(newVal === "/home");
       },
       immediate: true // 衡水老白干
-		}
-	}
+    }
+  },
+  computed: {
+    ...mapGetters(["totalcount"])
+  }
 };
 </script>
 
@@ -93,7 +97,7 @@ export default {
   padding-top: 40px;
   overflow: hidden;
 }
-.app-container{
+.app-container {
   padding-bottom: 55px;
 }
 .v-enter {
@@ -110,8 +114,6 @@ export default {
 .v-leave-active {
   transition: all 0.5s ease;
 }
-
-
 
 // 自定义 mui-tab-item-my 类名，解决 tabbar 和 mui.js 之间冲突的问题
 .mui-bar-tab .mui-tab-item-my.mui-active {
@@ -144,6 +146,5 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 </style>
 

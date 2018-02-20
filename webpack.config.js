@@ -10,7 +10,7 @@ module.exports = {
     entry: path.join(__dirname, './src/main.js'),
     output: {
         path: path.join(__dirname, './dist/'),
-        filename: 'add.js'
+        filename: 'bundle.js'
     },
     plugins: [HtmlpluginObj],
     module: {

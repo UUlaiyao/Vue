@@ -1,8 +1,10 @@
 <template>
 
   <div class="shopinfooing-cnm">
-     
-
+     <transition @before-enter="before" @enter="enter" @after-enter="afterenter">
+     <div class="ball" v-show="flag" ref="ball" ></div>
+     </transition>
+    
     <!-- 轮播 -->
     <div class="mui-card">
         <div class="mui-card-content">
@@ -21,10 +23,10 @@
             </p>
             <p>
               <span>购买数量：</span>
-              <computer></computer>
+              <nobox :max="getshopinfo.stock_quantity" @func="getselectcont"></nobox>
             </p>
             <mt-button type="primary" size="small">立即购买</mt-button>
-            <mt-button type="danger" size="small" >加入购物车</mt-button>
+            <mt-button type="danger" size="small" @click="addTocart">加入购物车</mt-button>
            
             </div>
         </div>
@@ -50,12 +52,17 @@
 </template>
 <script>
 import swper from "../subComponents/Swper.vue";
-import computer from '../subComponents/computer.vue'
+import nobox from "../subComponents/computer.vue";
+
+import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
       getshoplunl: [],
-      getshopinfo: {}
+      getshopinfo: {},
+      flag: false,
+      selectcount: 1
     };
   },
   created() {
@@ -63,6 +70,8 @@ export default {
     this.getshopifo();
   },
   methods: {
+    ...mapMutations(["addToshopcar"]),
+
     async getshoplun() {
       const { data } = await this.$http.get("/api/getthumimages/" + this.id);
       if (data.status === 0) {
@@ -78,17 +87,55 @@ export default {
         this.getshopinfo = data.message[0];
       }
     },
-    goCmt(){
-        this.$router.push("/home/goodscmt/"+this.id)
+    goCmt() {
+      this.$router.push("/home/goodscmt/" + this.id);
     },
-    GoodsDesc(){
-         this.$router.push("/home/Goodsdesc/" + this.id);
+    GoodsDesc() {
+      this.$router.push("/home/Goodsdesc/" + this.id);
+    },
+    addTocart() {
+      this.flag = !this.flag;
+      // console.log('xuanzhon'+this.selectcount)
+      //加购物车传一个状态默认打开,商品单价传
+      this.addToshopcar({
+        id: this.id,
+        count: this.selectcount,
+        state: true,
+        price: this.getshopinfo.sell_price
+      });
+    },
+    before(el) {
+      el.style.transform = "translate(0,0)";
+    },
+    enter(el, done) {
+      el.offsetWidth;
+      //获取小球dom元素Element.getBoundingClientRect()
+      //vue在数据变更时候不能 ---ref创建一个元素的引用
+      // console.log(this.$refs.ball)//获取元素
+      const ballPosition = this.$refs.ball.getBoundingClientRect();
+      const badgePosiion = document
+        .getElementById("badge")
+        .getBoundingClientRect();
+      const y = badgePosiion.top - ballPosition.top;
+      const x = badgePosiion.left - ballPosition.left;
+      // console.log(x)
+      // console.log(y)
+      el.style.transform = "translate(" + x + "px," + y + "px)";
+      el.style.transition = "all 0.4s cubic-bezier(.35,-0.64,.95,.94)";
+      done(); //让after函数有效果
+    },
+    afterenter(el) {
+      this.flag = !this.flag;
+    },
+    getselectcont(c) {
+      //获取选中的数量值
+      this.selectcount = c;
     }
   },
   props: ["id"],
   components: {
     swper,
-    computer
+    nobox
   }
 };
 </script>
@@ -100,17 +147,27 @@ export default {
 
   .btn-bottoms {
     display: block;
-    }
-.price {
+  }
+  .price {
     .old {
-        margin-right: 10px;
+      margin-right: 10px;
     }
     .new {
-        color: red;
-        font-size: 16px;
-        font-weight: bold;
+      color: red;
+      font-size: 16px;
+      font-weight: bold;
     }
-    }
+  }
+  .ball {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    position: absolute;
+    top: 390px;
+    left: 150px;
+    // transform: translate(80px,200px);
+    border-radius: 50%;
+    z-index: 10;
+  }
 }
-
 </style>

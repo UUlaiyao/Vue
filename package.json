@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --port 3000 --compress --progress --hot"
+    "dev": "webpack-dev-server --port 3000 --compress --progress --hot ",
+    "pub":"webpack --progress"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "vue-loader": "^14.0.2",
     "vue-template-compiler": "^2.5.13",
     "vue2-preview": "^1.0.1",
+    "vuex": "^3.0.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
